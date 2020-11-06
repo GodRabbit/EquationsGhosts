@@ -1,0 +1,138 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://fonts/Aldrich/Aldrich-Regular.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://themes/simple_gui.tres" type="Theme" id=2]
+[ext_resource path="res://scripts/end_game_screen.gd" type="Script" id=3]
+[ext_resource path="res://images/gui/gui_rect2.png" type="Texture" id=4]
+[ext_resource path="res://images/gui/star_sfx.png" type="Texture" id=5]
+
+[sub_resource type="DynamicFont" id=1]
+size = 48
+font_data = ExtResource( 1 )
+
+[sub_resource type="Theme" id=2]
+default_font = SubResource( 1 )
+
+[sub_resource type="ParticlesMaterial" id=3]
+emission_shape = 2
+emission_box_extents = Vector3( 150, 100, 1 )
+flag_disable_z = true
+gravity = Vector3( 0, 50, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+radial_accel = 62.07
+angle = 149.0
+angle_random = 0.62
+scale = 0.1
+scale_random = 0.27
+hue_variation = 0.06
+hue_variation_random = 0.11
+
+[sub_resource type="DynamicFont" id=4]
+size = 38
+font_data = ExtResource( 1 )
+
+[sub_resource type="Theme" id=5]
+default_font = SubResource( 4 )
+
+[node name="end_game_screen" type="Control"]
+margin_right = 40.0
+margin_bottom = 40.0
+theme = SubResource( 2 )
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="panel" type="Panel" parent="."]
+visible = false
+margin_right = 328.0
+margin_bottom = 256.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="panel_sprite" type="Sprite" parent="."]
+modulate = Color( 1, 1, 1, 0.54902 )
+position = Vector2( 164, 128 )
+scale = Vector2( 0.834606, 0.969697 )
+texture = ExtResource( 4 )
+
+[node name="particles" type="Particles2D" parent="."]
+position = Vector2( 160, 112 )
+amount = 20
+process_material = SubResource( 3 )
+texture = ExtResource( 5 )
+
+[node name="score_container" type="HBoxContainer" parent="."]
+margin_left = 16.0
+margin_top = 128.0
+margin_right = 385.0
+margin_bottom = 174.0
+theme = SubResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="score_head_label" type="Label" parent="score_container"]
+margin_top = 5.0
+margin_right = 149.0
+margin_bottom = 41.0
+text = "SCORE:"
+
+[node name="score_label" type="Label" parent="score_container"]
+margin_left = 153.0
+margin_top = 5.0
+margin_right = 293.0
+margin_bottom = 41.0
+text = "00000"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="main_container" type="VBoxContainer" parent="."]
+margin_left = 88.0
+margin_top = 16.0
+margin_right = 457.0
+margin_bottom = 258.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="game_label" type="Label" parent="main_container"]
+margin_right = 369.0
+margin_bottom = 46.0
+custom_colors/font_color = Color( 0.458824, 0.47451, 0.858824, 1 )
+text = "GAME"
+
+[node name="over_label" type="Label" parent="main_container"]
+margin_top = 50.0
+margin_right = 369.0
+margin_bottom = 145.0
+custom_colors/font_color = Color( 0.458824, 0.47451, 0.858824, 1 )
+text = "OVER
+"
+
+[node name="button_container" type="HBoxContainer" parent="."]
+margin_left = 40.0
+margin_top = 184.0
+margin_right = 314.0
+margin_bottom = 236.0
+theme = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="restart_button" type="Button" parent="button_container"]
+margin_right = 141.0
+margin_bottom = 52.0
+text = "Restart"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="exit_button" type="Button" parent="button_container"]
+margin_left = 145.0
+margin_right = 222.0
+margin_bottom = 52.0
+text = "Exit"

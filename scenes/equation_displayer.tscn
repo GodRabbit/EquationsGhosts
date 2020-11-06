@@ -1,0 +1,149 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://fonts/Aldrich/Aldrich-Regular.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://scripts/equation_displayer.gd" type="Script" id=2]
+[ext_resource path="res://images/gui/gui_rect1.png" type="Texture" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+size = 32
+font_data = ExtResource( 1 )
+
+[sub_resource type="Theme" id=2]
+default_font = SubResource( 1 )
+
+[sub_resource type="Shader" id=3]
+code = "shader_type canvas_item;
+
+// creates a metalic shine effect in the sprite
+// with thickness and slope given
+// get_value calculates if the vec2 v is in the range
+// it returns 0.0 if outside the range, and 1 at the 
+// center of effect
+
+uniform float thickness = 0.07;
+
+// vars that represnts the center line
+uniform float slope = -1.0; // 45 degrees
+uniform float y0 = 0.5; // a number between -1.0 and 1.0; represnts the intersection with y axis
+
+// calculates the distance between vector v and the center line of the effect
+float get_dist(vec2 v){
+	// using the formula for distance
+	float a = abs(slope*v.x - v.y + y0);
+	float b = sqrt(slope*slope + 1.0);
+	return a/b;
+}
+
+// the closer d to 0, the higher it should be.
+// and if d>=thickness the value will be 0.0;
+float dist_to_value(float d){
+	if(d < 0.0 || d >= thickness){
+		return 0.0;
+	}
+	else{
+		// try linear?
+		return (-d/thickness) + 1.0;
+		//return 1.0;
+	}
+	
+}
+
+float get_value(vec2 v){
+	float d = get_dist(v);
+	return dist_to_value(d);
+}
+
+void fragment() {
+	COLOR = textureLod(TEXTURE, UV, 0.0);
+	vec4 c = textureLod(TEXTURE, UV, 0.0);
+	c.a = c.a * get_value(UV.xy);
+	COLOR.rgb = COLOR.rgb + c.rgb*c.a;
+}"
+
+[sub_resource type="ShaderMaterial" id=4]
+shader = SubResource( 3 )
+shader_param/thickness = 0.07
+shader_param/slope = -1.0
+shader_param/y0 = 2.0
+
+[sub_resource type="Animation" id=5]
+resource_name = "idle0"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("panel_sprite:material:shader_param/y0")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 2.0 ]
+}
+
+[node name="equation_displayer" type="Control"]
+margin_right = 40.0
+margin_bottom = 40.0
+theme = SubResource( 2 )
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="panel" type="Panel" parent="."]
+visible = false
+margin_right = 328.0
+margin_bottom = 232.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="panel_sprite" type="Sprite" parent="."]
+material = SubResource( 4 )
+position = Vector2( 164, 116 )
+scale = Vector2( 0.832487, 0.966667 )
+texture = ExtResource( 3 )
+
+[node name="main_container" type="VBoxContainer" parent="."]
+margin_left = 24.0
+margin_top = 24.0
+margin_right = 294.0
+margin_bottom = 210.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="eq_head_label" type="Label" parent="main_container"]
+margin_right = 270.0
+margin_bottom = 65.0
+text = "Find A Soultion
+"
+
+[node name="eq_label" type="Label" parent="main_container"]
+margin_top = 69.0
+margin_right = 270.0
+margin_bottom = 100.0
+text = "+3x-63=+7x-120"
+
+[node name="line_edit" type="LineEdit" parent="main_container"]
+margin_top = 104.0
+margin_right = 270.0
+margin_bottom = 145.0
+max_length = 3
+placeholder_text = "x=???"
+placeholder_alpha = 0.17
+
+[node name="submit_button" type="Button" parent="main_container"]
+margin_top = 149.0
+margin_right = 270.0
+margin_bottom = 186.0
+text = "Submit"
+
+[node name="anim" type="AnimationPlayer" parent="."]
+anims/idle0 = SubResource( 5 )
+
+[node name="shine_timer" type="Timer" parent="."]
+one_shot = true
+autostart = true
